@@ -25,12 +25,6 @@ static char const * const kNitoRCRssDictionaryKey = "nRCRSSDictionary";
 static char const * const kNitoRCThingsKey = "nRCRSSThings";
 static char const * const kNitoRCParentControllerKey = "nRCParentController";
 
-@interface nitoRssController : NSObject
-
-- (CGRect)listRectWithSize:(CGRect)listFrame inMaster:(CGRect)master;
-- (CGRect)frame;
-@end
-
 
 %subclass nitoRssController : BRMediaMenuController
 
@@ -332,26 +326,18 @@ static char const * const kNitoRCParentControllerKey = "nRCParentController";
 }
 
 
-%new - (CGRect)listRectWithSize:(CGRect)listFrame inMaster:(CGRect)master
-{
-	listFrame.size.height -= 2.5f*listFrame.origin.y;
-	listFrame.size.width*=1.5f;
-	listFrame.origin.x = (master.size.width - listFrame.size.width) * 0.5f;
-	listFrame.origin.y *= 2.0f;
-	return listFrame;
-}
-
-
-
 - (void)layoutSubcontrols
 {
 	//Shrink the list frame to make room for displaying the filename
 	%orig;
 	CGRect master = [self frame];
 	id listLayer = [self list];
-	
+
 	CGRect listFrame = [listLayer frame];
-	listFrame = [self listRectWithSize:listFrame inMaster:master];
+	listFrame.size.height -= 2.5f*listFrame.origin.y;
+	listFrame.size.width *= 1.5f;
+	listFrame.origin.x = (master.size.width - listFrame.size.width) * 0.5f;
+	listFrame.origin.y *= 2.0f;
 	[listLayer setFrame:listFrame];
 	//[self doMyLayout];
 }

@@ -5,7 +5,7 @@
 //  Created by Thomas Cool on 2/15/11.
 //  Copyright 2011 tomcool.org. All rights reserved.
 //
-#import "Backrow/AppleTV.h"
+#import <BackRow/BackRow.h>
 
 @interface NSMFPhotoMediaAsset : BRPhotoMediaAsset {
     NSString *__title;

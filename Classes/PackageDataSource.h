@@ -5,6 +5,7 @@
 //  Created by Kevin Bradley on 2/26/11.
 //  Copyright 2011 nito, LLC. All rights reserved.
 //
+#pragma once
 
 #import "packageManagement.h"
 enum  {

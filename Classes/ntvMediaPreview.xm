@@ -1,11 +1,5 @@
 
 
-typedef enum {
-    kMetaTypePlug=0,
-    kMetaTypeCust=1,
-    kMetaTypeSimp=2,
-    kMetaTypeDefault=3,
-} ntvMetaType;
 
 static const char * const ntvMetaKey = "ntvMediaMeta";
 static const char * const ntvMetaDataTypeKey = "ntvMetaType";

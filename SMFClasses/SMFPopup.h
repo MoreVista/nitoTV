@@ -6,7 +6,7 @@
 //  Copyright 2010 tomcool.org. All rights reserved.
 //
 
-#import "Backrow/AppleTV.h"
+#import <BackRow/BackRow.h>
 
 @interface NSMFPopupInfo : BRTrackInfoControl
 

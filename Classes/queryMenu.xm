@@ -15,14 +15,6 @@
 	
 	//#import "NSTask.h"
 
-enum  {
-	
-	kNTVQueryStopped = 400,
-	kNTVQueryStarted,
-	kNTVQueryFinished,
-	kNTVQueryFailed,
-};
-
 
 static BOOL editorShowing = TRUE;
 static BOOL isEdged = FALSE;

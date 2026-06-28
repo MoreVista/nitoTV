@@ -6,7 +6,7 @@
 //  Copyright 2011 tomcool.org. All rights reserved.
 //
 
-#import "Backrow/AppleTV.h"
+#import <BackRow/BackRow.h>
 @protocol SMFListDropShadowDatasource
 - (long)popupItemCount;
 - (id)popupItemForRow:(long)row;
@@ -51,7 +51,7 @@
  *
  *  To remove it: you can call: -(void)removeFromParent
  */
--(void)addToController:(BRController *)ctrl;
+-(void)addToController:(id)ctrl;
 - (void)setZoomInPosition;
 - (void)setZoomOutPosition;
 

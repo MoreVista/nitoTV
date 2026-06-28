@@ -9,8 +9,8 @@
 #define NOSHELF
 #import "SMFPhotoMethods.h"
 #import "NSMFThemeInfo.h"
-#import "Backrow/AppleTV.h"
-#import "SMFMoviePreviewDelegateDatasource.h"
+#import <BackRow/BackRow.h>
+#import "NSMFMoviePreviewDelegateDatasource.h"
 @class BRControl,BRMediaShelfView;
 static char const * const kSMFMoviePreviewTitle ;
 static char const * const kSMFMoviePreviewSubtitle;

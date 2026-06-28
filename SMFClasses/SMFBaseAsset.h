@@ -6,7 +6,7 @@
 //  Copyright 2010 Thomas Cool. All rights reserved.
 //
 
-#import "Backrow/AppleTV.h"
+#import <BackRow/BackRow.h>
 
 
 @interface NSMFBaseAsset : BRXMLMediaAsset {

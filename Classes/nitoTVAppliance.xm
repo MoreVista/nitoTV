@@ -7,6 +7,8 @@
 	//#import "nitoInstallManager.h"
 	//#import "queryMenu.h"
 	#import "packageManagement.h"
+	#import "NitoTheme.h"
+	#import "nitoDefaultManager.h"
 	//#import "nitoManageMenu.h"
 
 

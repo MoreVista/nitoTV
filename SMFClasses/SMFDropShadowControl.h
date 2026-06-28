@@ -6,7 +6,7 @@
 //  Copyright 2011 nito, LLC. All rights reserved.
 //
 
-#import "Backrow/AppleTV.h"
+#import <BackRow/BackRow.h>
 
 
 @interface NSMFDropShadowControl : BRDropShadowControl {

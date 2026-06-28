@@ -1,0 +1,14 @@
+Name: nitoTV
+Package: com.nito.nitotv
+Provides: com.nito.gs
+Conflicts: com.nito.gs(<=0.1-4)
+Replaces: com.nito.gs(<=0.1-4)
+Website: nitosoft.com
+Maintainer: nito
+Author: nito
+Description: nitoTV for AppleTV 2/3 (iOS 6/7 compat) - package manager, weather, RSS, settings
+Section: Utilities
+Depends: mobilesubstrate, cydia(>=1.1.1)
+Architecture: iphoneos-arm
+Version: 0.8.7-2
+Installed-Size: 2012

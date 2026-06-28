@@ -23,17 +23,6 @@
  *** First throw call stack:
  */
 
-enum  {
-	
-	kNTVConnectionPackagesCheck = 1,
-	kNTVConnectionPackagesBZ2Check,
-	kNTVSourcesListMode,
-	kNTVSourceBrowseMode,
-	kNTVSourceMissingDefaultsMode,
-};
-
-
-
 #define NITO_LIST @"/etc/apt/sources.list.d/nitotv.list"
 
 /*

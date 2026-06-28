@@ -27,7 +27,7 @@ static int _currentRow;
 
 %new - (id) initWithTitle:(NSString *)theTitle withType:(int)sType
 {
-	self = %orig;
+	self = [self initWithTitle:theTitle];
 	
 	_currentType = sType;
 	

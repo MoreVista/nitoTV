@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- バンドル基本情報 -->
+	<key>CFBundleExecutable</key>
+	<string>nitoTV</string>
+
+	<key>CFBundleIdentifier</key>
+	<string>com.nito.frontrow.appliance.nitoTV</string>
+
+	<key>CFBundleName</key>
+	<string>nitoTV</string>
+
+	<!-- APPL ではなく BNDL が正しい -->
+	<key>CFBundlePackageType</key>
+	<string>BNDL</string>
+
+	<key>CFBundleVersion</key>
+	<string>0.8.7</string>
+
+	<key>CFBundleShortVersionString</key>
+	<string>0.8.7</string>
+
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+
+	<key>CFBundleSupportedPlatforms</key>
+	<array>
+		<string>iPhoneOS</string>
+	</array>
+
+	<!-- ATV2=2, ATV3=3; 両方を列挙 -->
+	<key>UIDeviceFamily</key>
+	<array>
+		<integer>2</integer>
+		<integer>3</integer>
+	</array>
+
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+
+	<!-- ATV2 は 4.x, ATV3 は 6.x/7.x だが 4.2 を最低値にしておく -->
+	<key>MinimumOSVersion</key>
+	<string>4.2</string>
+
+	<!-- Frontrow Appliance 固有キー -->
+	<key>FRApplianceName</key>
+	<string>nitoTV</string>
+
+	<!-- "Al" ではなく "All" が正しい -->
+	<key>FRApplianceDataSourceType</key>
+	<string>All</string>
+
+	<key>FRHideIfNoCategories</key>
+	<false/>
+
+	<key>FRAppliancePreferedOrder</key>
+	<integer>0</integer>
+
+	<key>FRRemoteAppliance</key>
+	<true/>
+
+	<key>FRPrimaryAppliance</key>
+	<true/>
+
+	<!-- ランタイムで %subclass によって登録されるクラス名 -->
+	<key>NSPrincipalClass</key>
+	<string>nitoTVAppliance</string>
+
+	<key>CFBundleIconFile</key>
+	<string>AppIcon.png</string>
+
+	<!-- beigelist 用 -->
+	<key>BLShowInFirstRow</key>
+	<false/>
+</dict>
+</plist>

@@ -764,7 +764,7 @@ void checkNil(NSObject *ctrl)
 			//does respond
 			if ([[self delegate] controllerCanSwitchToPrevious:self]) {
 				//draw previous arrow
-				ntvImageControl *_previousArrowImageControl = [(ntvImageControl*)[objc_getClass("ntvImageControl") alloc] init];
+				id _previousArrowImageControl = [[objc_getClass("ntvImageControl") alloc] init];
 				
 				if (_previousArrowTurnedOn) {
 					[self switchPreviousArrowOn];
@@ -773,15 +773,15 @@ void checkNil(NSObject *ctrl)
 				}
 				
 				CGRect objFrame = firstButtonFrame;
-				objFrame.origin.x -= [(ntvImage*)[_previousArrowImageControl image] pixelBounds].width + arrowImageControlMargin;
-				objFrame.origin.y += (objFrame.size.height/2) - ([(ntvImage*)[_previousArrowImageControl image] pixelBounds].height / 2);
-				objFrame.size.height = [(ntvImage*)[_previousArrowImageControl image] pixelBounds].height;
-				objFrame.size.width = [(ntvImage*)[_previousArrowImageControl image] pixelBounds].width;
+				objFrame.origin.x -= [(id)[_previousArrowImageControl image] pixelBounds].width + arrowImageControlMargin;
+				objFrame.origin.y += (objFrame.size.height/2) - ([(id)[_previousArrowImageControl image] pixelBounds].height / 2);
+				objFrame.size.height = [(id)[_previousArrowImageControl image] pixelBounds].height;
+				objFrame.size.width = [(id)[_previousArrowImageControl image] pixelBounds].width;
 				[_previousArrowImageControl setFrame:objFrame];
 				
 				//rotate imageview so arrow points in the right direction
 				CGAffineTransform cgCTM = CGAffineTransformMakeRotation(M_PI);
-				_previousArrowImageControl.affineTransform = cgCTM;
+				[_previousArrowImageControl setValue:[NSValue valueWithBytes:&cgCTM objCType:@encode(CGAffineTransform)] forKey:@"affineTransform"];
 				
 				[self setPreviousArrowImageControl:_previousArrowImageControl];
 				
@@ -1091,7 +1091,7 @@ void checkNil(NSObject *ctrl)
 }
 %new -(void)switchPreviousArrowOn 
 {
-	ntvImageControl *_previousArrowImageControl = [self previousArrowImageControl];
+	id _previousArrowImageControl = [self previousArrowImageControl];
 	_previousArrowTurnedOn = YES; //used to retain arrow state if view is reloaded
 	if (_previousArrowImageControl) {
 		id arrowImageON = [packageManagement _imageWithPath:[[NSBundle bundleForClass:[BTI class]]pathForResource:@"Arrow_ON" ofType:@"png"]];

@@ -13,6 +13,7 @@
 
 #import "NSMFMockMenuItem.h"
 #import "NSMFAnimation.h"
+#import "../Classes/packageManagement.h"
 
 %subclass ntvListControl : BRListControl
 
@@ -32,12 +33,6 @@ static char const * const kSMFLDSCListKey = "SMFLDSCList";
 static char const * const kSMFLDSCSenderKey = "SMFLDSCSender";
 
 static BOOL _isAnimated = TRUE;
-
-@interface NSMFListDropShadowControl : NSObject
-
--(CGRect)rectForSize:(CGSize)s;
-
-@end
 
 
 %subclass NSMFListDropShadowControl : BRDropShadowControl
@@ -219,7 +214,7 @@ static BOOL _isAnimated = TRUE;
 	id theDatasource = [self cDatasource];
 	
     if (theDatasource && [theDatasource respondsToSelector:@selector(popupHeightForRow:)]) {
-        return (float)(long)(void*)[theDatasource popupHeightForRow:row];
+        return (float)(long)[theDatasource popupHeightForRow:row];
     }
     return 0.0f;
 }

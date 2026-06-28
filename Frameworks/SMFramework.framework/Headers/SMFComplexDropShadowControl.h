@@ -36,7 +36,7 @@
 @property(readwrite,assign)NSObject *delegate;
 
 -(void)appendToText:(NSString *)t;
--(void)addToController:(BRController *)ctrl;
+-(void)addToController:(id)ctrl;
 
 -(void)setShowsProgressBar:(BOOL)shows;
 -(void)setShowsWaitSpinner:(BOOL)spinner;

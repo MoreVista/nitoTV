@@ -6,7 +6,7 @@
 //  Copyright 2011 Thomas Cool. All rights reserved.
 //
 
-#import "Backrow/AppleTV.h"
+#import <BackRow/BackRow.h>
 #import "NSMFDropShadowControl.h"
 
 @interface SMFTextDropShadowControl : NSMFDropShadowControl {

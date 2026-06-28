@@ -51,7 +51,7 @@
  *
  *  To remove it: you can call: -(void)removeFromParent
  */
--(void)addToController:(BRController *)ctrl;
+-(void)addToController:(id)ctrl;
 @property (retain) NSObject<SMFListDropShadowDelegate>* cDelegate;
 @property (retain) NSObject<SMFListDropShadowDatasource>* cDatasource;
 @property (retain) BRListControl *list;

@@ -1,5 +1,4 @@
 
-#import "ntvRssDelegate.h"
 #import "nitoRss.h"
 #import "nitoRssController.h"
 
