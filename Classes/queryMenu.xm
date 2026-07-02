@@ -505,7 +505,7 @@ static char const * const kNitoQuerySelectedObjectKey = "nQuerySelectedObject";
 {
 	//NSLog(@"%@ %s", self, _cmd);
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    NSTask *searchTask = [[NSTask alloc] init];
+    NSTask *searchTask = [[objc_getClass("NSTask") alloc] init];
     NSPipe *pipe = [[NSPipe alloc] init];
     NSFileHandle *handle = [pipe fileHandleForReading];
     NSData *outData = nil;
@@ -573,7 +573,7 @@ static char const * const kNitoQuerySelectedObjectKey = "nQuerySelectedObject";
 {
 	//NSLog(@"%@ %s", self, _cmd);
 	//apt-cache show
-	NSTask *packageTask = [[NSTask alloc] init];
+	NSTask *packageTask = [[objc_getClass("NSTask") alloc] init];
     NSPipe *pipe = [[NSPipe alloc] init];
     NSFileHandle *handle = [pipe fileHandleForReading];
     NSData *outData;

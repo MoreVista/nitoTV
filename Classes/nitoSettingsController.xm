@@ -607,7 +607,7 @@ enum {
  
  int main(int argc, char **argv, char **envp) {
  id p = [[NSAutoreleasePool alloc] init];
- id t = [NSTask launchedTaskWithLaunchPath:@"/bin/sleep" arguments:[NSArray arrayWithObject:@"5"]];
+ id t = [objc_getClass("NSTask") launchedTaskWithLaunchPath:@"/bin/sleep" arguments:[NSArray arrayWithObject:@"5"]];
  NSLog(@"launched task %@", t);
  waitpid([t processIdentifier], NULL, 0); // instead of [t waitUntilExit]
  NSLog(@"task %@ exited", t);

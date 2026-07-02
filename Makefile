@@ -28,7 +28,8 @@ include $(THEOS)/makefiles/aggregate.mk
 
 BUNDLE_NAME = nitoTV
 
-nitoTV_FILES  = Classes/NSObject+AssociatedObjects.m
+nitoTV_FILES  = Classes/nitoTVDiag.mm
+nitoTV_FILES += Classes/NSObject+AssociatedObjects.m
 nitoTV_FILES += Classes/nitoTVAppliance.xm
 nitoTV_FILES += Classes/APAttribute.m
 nitoTV_FILES += Classes/APDocument.m
@@ -115,9 +116,10 @@ nitoTV_LDFLAGS += -framework Foundation
 nitoTV_LDFLAGS += -framework CoreGraphics
 nitoTV_LDFLAGS += -framework SystemConfiguration
 nitoTV_LDFLAGS += -framework CoreFoundation
-## SMFramework はリポジトリ内 Frameworks/ から読む
-nitoTV_LDFLAGS += -FFrameworks
-nitoTV_LDFLAGS += -framework SMFramework
+## SMFramework (armv6) は最新 ATV3 の armv7 プロセスにロードできないためリンクしない。
+## PackageDataSource は実行時に自前の NSMFMoviePreviewController(BRController派生) を
+## 親クラスにしているため、プレビルト SMFramework は不要。
+## ヘッダは -IFrameworks/.../Headers 経由でコンパイル時のみ参照する。
 
 include $(FW_MAKEDIR)/bundle.mk
 

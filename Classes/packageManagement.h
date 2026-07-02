@@ -23,15 +23,34 @@
 
 #define CLASS(cls) objc_getClass(#cls)
 
+/* ファイルログ: 永続パス（リスプリング/リブートで消えない）に追記 */
+#define NTV_LOG_PATH @"/var/root/Media/nitotv.log"
+#define NTV_LOG(fmt, ...) do { \
+    NSString *_msg = [NSString stringWithFormat:@"[nitoTV] " fmt, ##__VA_ARGS__]; \
+    NSLog(@"%@", _msg); \
+    NSString *_line = [_msg stringByAppendingString:@"\n"]; \
+    NSFileHandle *_fh = [NSFileHandle fileHandleForWritingAtPath:NTV_LOG_PATH]; \
+    if (!_fh) { \
+        [@"" writeToFile:NTV_LOG_PATH atomically:NO encoding:NSUTF8StringEncoding error:nil]; \
+        _fh = [NSFileHandle fileHandleForWritingAtPath:NTV_LOG_PATH]; \
+    } \
+    [_fh seekToEndOfFile]; \
+    [_fh writeData:[_line dataUsingEncoding:NSUTF8StringEncoding]]; \
+    [_fh closeFile]; \
+} while(0)
+
 /* BRLocalizedStringManager - BackRow が定義するため forward declaration のみ */
 @class BRLocalizedStringManager;
 
+/* BackRow クラスはハード参照(_OBJC_CLASS_$_)にすると AppleTV.app が
+ * シンボルをエクスポートしていないためロード時に dlopen が失敗する。
+ * 必ず objc_getClass() 文字列参照にすること。 */
 #define BRLocalizedString(key, comment) \
-	[BRLocalizedStringManager appliance:self localizedStringForKey:(key) inFile:nil]
+	[objc_getClass("BRLocalizedStringManager") appliance:self localizedStringForKey:(key) inFile:nil]
 #define BRLocalizedStringFromTable(key, tbl, comment) \
-	[BRLocalizedStringManager appliance:self localizedStringForKey:(key) inFile:(tbl)]
+	[objc_getClass("BRLocalizedStringManager") appliance:self localizedStringForKey:(key) inFile:(tbl)]
 #define BRLocalizedStringFromTableInBundle(key, tbl, obj, comment) \
-	[BRLocalizedStringManager appliance:(obj) localizedStringForKey:(key) inFile:(tbl)]
+	[objc_getClass("BRLocalizedStringManager") appliance:(obj) localizedStringForKey:(key) inFile:(tbl)]
 
 #ifdef DEBUG
 	#define __DEBUG__
@@ -60,7 +79,7 @@
 #define ESSENTIAL_PREDICATE @"(SELF CONTAINS[c] Essential) OR (Tag contains[c] 'essential') OR (Priority == 'required') or (Package == 'com.nito.nitotv')"
 #define TEMP_PREDICATE2 @"(SELF CONTAINS[c] Essential) OR (Tag contains[c] 'essential')"
 #define POTENTIALLY_USEFUL_PREDICATE  @"(Section == 'Utilities') OR (Section == 'System') OR (Section == 'Development')"
-#define FR_PREF [BRPreferences sharedFrontRowPreferences]
+#define FR_PREF [objc_getClass("BRPreferences") sharedFrontRowPreferences]
 #define LAST_UPDATE_CHECK @"lastSelfUpdateCheck"
 #define NOTIFICATION_HOOKS @"notificationHooks"
 #define UPDATE_CHECK_FREQUENCY @"updateCheckFrequency"
@@ -68,12 +87,12 @@
 #define HOUR_MINUTES	60
 #define DAY_MINUTES		1440
 #define WEEK_MINUTES	10080
-#define PLAY_POP_SOUND [BRSoundHandler playSound:0]
-#define PLAY_PUSH_SOUND [BRSoundHandler playSound:1]
-#define PLAY_NAV_SOUND [BRSoundHandler playSound:15]
-#define PLAY_FAIL_SOUND [BRSoundHandler playSound:16]
+#define PLAY_POP_SOUND [objc_getClass("BRSoundHandler") playSound:0]
+#define PLAY_PUSH_SOUND [objc_getClass("BRSoundHandler") playSound:1]
+#define PLAY_NAV_SOUND [objc_getClass("BRSoundHandler") playSound:15]
+#define PLAY_FAIL_SOUND [objc_getClass("BRSoundHandler") playSound:16]
 
-#define ROOT_STACK [[BRApplicationStackManager singleton] stack]
+#define ROOT_STACK [[objc_getClass("BRApplicationStackManager") singleton] stack]
 #define PM [packageManagement sharedManager]
 #define CPLUSPLUS_SUCKS (BOOL)(intptr_t)
 

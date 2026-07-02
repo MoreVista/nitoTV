@@ -163,6 +163,10 @@ static char const * const ntvApplianceCategoriesKey = "nApplianceCategories";
 @end
 */
 
+%ctor {
+    NTV_LOG(@"[nitoTV] %ctor: bundle loaded, registering classes");
+}
+
 %subclass nitoTVAppliance : BRBaseAppliance
 
 	//@implementation nitoTVAppliance
@@ -170,10 +174,13 @@ static char const * const ntvApplianceCategoriesKey = "nApplianceCategories";
 
 - (id)applianceInfo
 {
+	NTV_LOG(@"[nitoTV] applianceInfo called, ntvFivePointOnePlus=%d, NTVApplianceInfo=%@",
+	        (int)[packageManagement ntvFivePointOnePlus],
+	        objc_getClass("NTVApplianceInfo") ? @"OK" : @"nil");
 	if ([packageManagement ntvFivePointOnePlus])
-	{	
+	{
 		return [[[%c(NTVApplianceInfo) alloc] init] autorelease];
-		
+
 	}
 	else 
 
@@ -223,13 +230,18 @@ static char const * const ntvApplianceCategoriesKey = "nApplianceCategories";
 
 
 + (void)initialize {
-	
-	NSLog(@"NITOTV INITIALIZE");
-
-		//	NSLog(@"ALERT: mobilesubstrate DEPENDANTS: %@", depends);
-	[%c(nitoTVAppliance) installFiles];
-    [packageManagement updatePackageList];
-		
+	NTV_LOG(@"[nitoTV] +initialize (軽量: 重い処理はスキップ)");
+	/*
+	 * 重要: +initialize は Frontrow のアプライアンススキャン中に走る。
+	 * ここで installFiles / updatePackageList（apt DB 読み込み・リポジトリ操作・
+	 * ファイルコピー）を同期実行すると Frontrow がブロック/クラッシュし、
+	 * リスプリングループ（文鎮化）を引き起こす。
+	 * これらは実際にアプライアンスを開いたとき（controllerForIdentifier:）に
+	 * 遅延実行する。
+	 *
+	 * [%c(nitoTVAppliance) installFiles];
+	 * [packageManagement updatePackageList];
+	 */
 }
 
 	//_kRUIWiFiSetupSucceeded
@@ -589,28 +601,22 @@ static char const * const ntvApplianceCategoriesKey = "nApplianceCategories";
 
 - (id)initWithApplianceInfo:(id)applianceInfo
 {
+	NTV_LOG(@"[nitoTV] initWithApplianceInfo: called (iOS5+ 経路)");
 	if((self = %orig) != nil) {
-		
-		id topShelfControl = [[NITOTVTopShelfController alloc] init];
-		[self setTopShelfController:topShelfControl];
+		/* TopShelfController はメニュー表示に不要・クラッシュ源になり得るため一旦無効化 */
 		NSArray *catArray = [[NSArray alloc] initWithObjects:SOFTWARE_CAT, SOURCES_CAT, WEATHER_CAT, RSS_CAT, SETTINGS_CAT, ABOUT_CAT, nil];
 		[self setApplianceCategories:catArray];
-		
-		
+		NTV_LOG(@"[nitoTV] initWithApplianceInfo: categories set (%d)", (int)[catArray count]);
 	}
 	return self;
 }
 
 - (id)init {
-		//LOG_SELF
+	NTV_LOG(@"[nitoTV] init called (iOS4 経路)");
 	if((self = %orig) != nil) {
-		
-		id topShelfControl = [[NITOTVTopShelfController alloc] init];
-		[self setTopShelfController:topShelfControl];
 		NSArray *catArray = [[NSArray alloc] initWithObjects:SOFTWARE_CAT, SOURCES_CAT, WEATHER_CAT, RSS_CAT, SETTINGS_CAT, ABOUT_CAT, nil];
 		[self setApplianceCategories:catArray];
-		
-		
+		NTV_LOG(@"[nitoTV] init: categories set (%d)", (int)[catArray count]);
 	}
 	return self;
 }
@@ -694,16 +700,20 @@ static char const * const ntvApplianceCategoriesKey = "nApplianceCategories";
 		menuController =  [%c(BRController) controllerWithContentControl:textControls];
 	} else if ([identifier isEqualToString:WEATHER_ID])
 	{
+		NTV_LOG(@"[nitoTV] WEATHER selected. internetAvailable=%d, ntvWeatherManager=%@",
+		        (int)internetAvailable, objc_getClass("ntvWeatherManager") ? @"OK" : @"nil");
 		menuController = [[objc_getClass("ntvWeatherManager") alloc] initWithArray:nil state:nil andTitle:BRLocalizedString(@"Weather Manager", @"Title of weather menu")];
-		
+		NTV_LOG(@"[nitoTV] WEATHER ntvWeatherManager init done: %@", menuController);
+
 		if (internetAvailable == FALSE)
 		{
+			NTV_LOG(@"[nitoTV] WEATHER no internet -> BRAlertController path");
 			menuController = [%c(BRAlertController) alertOfType:1 titled:BRLocalizedString(@"Internet Unavailable", @"Internet Unavailable") primaryText:@"Configure Internet First! ktnx" secondaryText:@"Seriously... do it now"];
-			
+
 			NSLog(@"No internet for you!");
-			
+
 		}
-		
+
 	} else if ([identifier isEqualToString:RSS_ID])
 	{
 		

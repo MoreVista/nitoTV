@@ -54,4 +54,7 @@ echo "127.0.0.1	mesu.apple.com" >> /etc/hosts
 echo "127.0.0.1	appldnld.apple.com" >> /etc/hosts
 echo "127.0.0.1	appldnld.apple.com.edgesuite.net" >> /etc/hosts
 
+# restart Frontrow so the new appliance is picked up
+killall AppleTV 2>/dev/null || true
+
 exit 0;

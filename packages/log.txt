@@ -1,0 +1,26 @@
+[ATVFileManager] FMAppliance$initWithApplianceInfo called (iOS 5+ path)
+[ATVFileManager] FMAppliance$initWithApplianceInfo done
+[ATVFileManager] FMAppliance$applianceInfo called
+[ATVFileManager] FMAppliance$applianceInfo called
+[ATVFileManager] FMAppliance$controllerForIdentifier: com.example.atvfilemanager.main
+[ATVFileManager] controlWasActivated: start
+[ATVFileManager] initApplianceRuntimeClasses start
+[ATVFileManager] BRApplianceInfo: OK
+[ATVFileManager] safeHook: added key (super impl saved)
+[ATVFileManager] safeHook: added name (super impl saved)
+[ATVFileManager] safeHook: added localizedStringsFileName (super impl saved)
+[ATVFileManager] FMApplianceInfo registered
+[ATVFileManager] safeHook: added init (super impl saved)
+[ATVFileManager] safeHook: added initWithApplianceInfo: (super impl saved)
+[ATVFileManager] safeHook: added applianceInfo (super impl saved)
+[ATVFileManager] safeHook: added applianceCategories (super impl saved)
+[ATVFileManager] safeHook: added identifierForContentAlias: (super impl saved)
+[ATVFileManager] safeHook: added controllerForIdentifier:args: (super impl saved)
+[ATVFileManager] FMAppliance registered
+[ATVFileManager] needsApplianceInfoHack: NO (iOS5+)
+[ATVFileManager] initFMBrowserController start
+[ATVFileManager] FMBrowserController registered
+[ATVFileManager] initFMEditorController start
+[ATVFileManager] FMEditorController registered
+[ATVFileManager] FMAppliance$initWithApplianceInfo called (iOS 5+ path)
+[ATVFileManager] FMAppliance$initWithApplianceInfo done
