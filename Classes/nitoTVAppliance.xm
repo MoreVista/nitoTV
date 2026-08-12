@@ -74,6 +74,23 @@
 	return @"NitoTVLocalizable";
 }
 
+/* ホーム画面アイコン: BRApplianceInfo は iconPath/icon からアイコンを取得する。
+ * iOS5+ 経路では init 生成のためバンドルパスが未設定で、デフォルトの iconPath が
+ * nil を返しアイコンが出ない。バンドル内 AppIcon.png のパスを明示的に返す。 */
+- (id)iconPath
+{
+	NSString *p = [[NSBundle bundleForClass:[NitoTheme class]] pathForResource:@"AppIcon" ofType:@"png"];
+	NTV_LOG(@"[nitoTV] NTVApplianceInfo iconPath=%@", p);
+	return p;
+}
+
+- (id)icon
+{
+	id img = [%c(BRImage) imageWithPath:[self iconPath]];
+	NTV_LOG(@"[nitoTV] NTVApplianceInfo icon=%@", img);
+	return img;
+}
+
 %end
 
 %subclass nitoTopShelfView : BRTopShelfView
