@@ -1,4 +1,14 @@
 #! /bin/sh
+
+# nitoHelper / setuid ラッパーに setuid ビットを立てる。
+# AppleTV(Frontrow) は mobile ユーザーで動くため、これが無いと
+# apt/dpkg が "Permission denied / are you root?" で失敗する。
+# (deb 化/git は setuid ビットを保持しないため postinst で確実に設定する)
+# 注意: この postinst は後半の hosts チェックで early-exit するため、
+# setuid 設定は必ず先頭で行うこと。
+chown root:wheel /usr/bin/nitoHelper /usr/libexec/nitotv/setuid 2>/dev/null || true
+chmod 4755 /usr/bin/nitoHelper /usr/libexec/nitotv/setuid 2>/dev/null || true
+
 FILE2=/var/mobile/Media/Photos/seas0nTV.png
 FILE3=/var/mobile/Media/Photos/spicon.png
 FILE4=/Library/MobileSubstrate/DynamicLibraries/apocalypsePony

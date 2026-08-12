@@ -521,7 +521,7 @@ static char const * const kNitoWMCurrentNitoWeatherKey = "nWMCurrentNitoWeather"
 	double H	= (log10(RH)-2)/0.4343 + (17.62*T)/(243.12+T);
 	double Dp	= 243.12*H/(17.62-H);
 	
-		//return [NSString stringWithFormat:@"%.2f�%@", Dp, units];
+		//return [NSString stringWithFormat:@"%.2f�%@", Dp, units];
 	return [NSString stringWithFormat:@"%.2f%@%@",Dp, units, DEGREE_UNICODE];
 }
 
@@ -548,7 +548,7 @@ static char const * const kNitoWMCurrentNitoWeatherKey = "nWMCurrentNitoWeather"
 //dew point = 100 - humidity / 2.778 for fahrenheit
 - (id) previewControlForItem: (long)row
 {
-	
+	NTV_LOG(@"[weather] previewControlForItem row=%ld", row);
 	id theLocation = [[self locations] objectAtIndex:row];
 	//NSLog(@"theLocation: %@", theLocation);
 	if ([theLocation isEqualToString:@"addnew"])
@@ -560,15 +560,21 @@ static char const * const kNitoWMCurrentNitoWeatherKey = "nWMCurrentNitoWeather"
 	NSURL *theUrl = [NSURL URLWithString:[NSString stringWithFormat:@"http://weather.yahooapis.com/forecastrss?p=%@&u=%@", theLocation,currentUnit]];
 	
 	NSString *theString = [NSString stringWithContentsOfURL:theUrl encoding:NSUTF8StringEncoding error:nil];
-	
-	
-	
+	NTV_LOG(@"[weather] fetched yahoo len=%d", (int)[theString length]);
+
 	APDocument *xmlDoc = [APDocument documentWithXMLString:theString];
 
 	NSDictionary *weatherInfo = [%c(ntvWeatherManager) parseYahooRSS:xmlDoc];
-	//NSLog(@"weatherInfo: %@", weatherInfo);
-	
-	if (weatherInfo == nil)
+
+	// Yahoo 天気 API は廃止済みで空/不正レスポンスを返す。
+	// weatherInfo が nil、空レスポンス、または必須キー(temp)が無い場合は
+	// 天気アイコンのみのフォールバックへ（nil 挿入クラッシュを防ぐ）。
+	BOOL invalid = (weatherInfo == nil) || ([theString length] == 0)
+	               || ([weatherInfo valueForKey:@"temp"] == nil);
+	NTV_LOG(@"[weather] weatherInfo=%@ invalid=%d",
+	        weatherInfo ? @"non-nil" : @"nil", (int)invalid);
+
+	if (invalid)
 	{
 		[currentAsset release];
 		return [self ogpreviewControlForItem:row];
@@ -600,30 +606,32 @@ static char const * const kNitoWMCurrentNitoWeatherKey = "nWMCurrentNitoWeather"
 	NSMutableArray *customKeys = [[NSMutableArray alloc] init];
 	NSMutableArray *customObjects = [[NSMutableArray alloc] init];
 	
+	/* nil を addObject するとクラッシュするため ?: で防御 */
 	[customKeys addObject:BRLocalizedString(@"Dew Point", @"Dew Point")];
-	[customObjects addObject:dewPoint];
-	
+	[customObjects addObject:(dewPoint ?: @"--")];
+
 	[customKeys addObject:BRLocalizedString(@"Humidity", @"Humidity")];
-	[customObjects addObject:humidity];
-	
+	[customObjects addObject:(humidity ?: @"--")];
+
 	[customKeys addObject:BRLocalizedString(@"Wind",@"Wind")];
-	[customObjects addObject:wind];
-	
+	[customObjects addObject:(wind ?: @"--")];
+
 	[customKeys addObject:BRLocalizedString(@"Location", @"Location")];
-	[customObjects addObject:[NSString stringWithFormat:@"%@, %@", city, region]];
-	
+	[customObjects addObject:([NSString stringWithFormat:@"%@, %@", (city ?: @""), (region ?: @"")])];
+
 	[customKeys addObject:BRLocalizedString(@"Date", @"Date")];
-	[customObjects addObject:date];
+	[customObjects addObject:(date ?: @"--")];
 	
 	[currentAsset setCustomKeys:[customKeys autorelease] 
 					 forObjects:[customObjects autorelease]];
 	
 	
+	NTV_LOG(@"[weather] building ntvMediaPreview");
 	id preview = [[objc_getClass("ntvMediaPreview") alloc]init];
 	[preview setAsset:currentAsset];
 	[preview setShowsMetadataImmediately:YES];
 	[currentAsset release];
-	
+	NTV_LOG(@"[weather] previewControlForItem done");
 	return [preview autorelease];
 }
 
@@ -664,15 +672,20 @@ static char const * const kNitoWMCurrentNitoWeatherKey = "nWMCurrentNitoWeather"
 {
 
 	progressRow = -1;
+	NTV_LOG(@"[weather] initWithArray start");
 	if ( [self init] == nil )
 		return ( nil );
-	
+	NTV_LOG(@"[weather] after [self init]");
 
-	
 	id sp = [[NitoTheme sharedTheme] weatherImage];
 	[self setListTitle:theTitle];
-	[self setListIcon:sp horizontalOffset:0.25 kerningFactor:0.1];
-	
+	NTV_LOG(@"[weather] before setListIcon");
+	if ([self respondsToSelector:@selector(setListIcon:horizontalOffset:kerningFactor:)])
+		[self setListIcon:sp horizontalOffset:0.25 kerningFactor:0.1];
+	else if ([self respondsToSelector:@selector(setListIcon:)])
+		[self setListIcon:sp];
+	NTV_LOG(@"[weather] after setListIcon");
+
 		//_mainTitle = theTitle;
 
 	[self setMainTitle:theTitle];
@@ -689,6 +702,7 @@ static char const * const kNitoWMCurrentNitoWeatherKey = "nWMCurrentNitoWeather"
 		weatherFile = [[NSBundle bundleForClass:[NitoTheme class]] pathForResource:@"weather" ofType:@"plist"];
 	
 	NSMutableDictionary *_globalDict = [[NSMutableDictionary alloc] initWithContentsOfFile:weatherFile];
+	NTV_LOG(@"[weather] plist=%@ globalDict keys=%d", weatherFile, (int)[[_globalDict allKeys] count]);
 
 		int feedCount = [[_globalDict allKeys] count];
 	int i;
@@ -761,10 +775,14 @@ static char const * const kNitoWMCurrentNitoWeatherKey = "nWMCurrentNitoWeather"
 	[self setLocationDicts:_locationDicts];
 	[self setGlobalDict:_globalDict];
 	
+	NTV_LOG(@"[weather] before setDatasource, list=%@", [self list]);
 	[[self list] setDatasource:self];
 	long theCount = (long)[self controlCount];
-	[[self list] addDividerAtIndex:theCount - 1 withLabel:@"Options"];	
-	
+	NTV_LOG(@"[weather] controlCount=%ld, before addDividerAtIndex", theCount);
+	if (theCount > 0 && [[self list] respondsToSelector:@selector(addDividerAtIndex:withLabel:)])
+		[[self list] addDividerAtIndex:theCount - 1 withLabel:@"Options"];
+	NTV_LOG(@"[weather] initWithArray done");
+
 	return ( self );
 }
 
@@ -959,25 +977,28 @@ static char const * const kNitoWMCurrentNitoWeatherKey = "nWMCurrentNitoWeather"
 
 %new - (id) controlAtIndex: (long) row requestedBy:(id)fp12
 {
-	if ( row > [[self names] count] )
+	NTV_LOG(@"[weather] controlAtIndex row=%ld names=%d", row, (int)[[self names] count]);
+	if ( row >= [[self names] count] )
 		return ( nil );
-	
-	//NSLog(@"%@ %s", self, _cmd);
-	
-	
+
 	id result = nil;
 	NSString *theTitle = [[self names] objectAtIndex: row];
-	
+
 	if (row == progressRow) {
 		result = [objc_getClass("nitoMenuItem") ntvProgressMenuItem];
 	} else {
 		result = [objc_getClass("nitoMenuItem") ntvFolderMenuItem];
 	}
-	
-	[result setText:theTitle withAttributes:[[%c(BRThemeInfo) sharedTheme] menuItemTextAttributes]];			
-	//[result addAccessoryOfType:1];
-	
-	
+	NTV_LOG(@"[weather] controlAtIndex menuItem=%@", result);
+
+	id theme = [%c(BRThemeInfo) sharedTheme];
+	if ([result respondsToSelector:@selector(setText:withAttributes:)]
+	    && [theme respondsToSelector:@selector(menuItemTextAttributes)]) {
+		[result setText:theTitle withAttributes:[theme menuItemTextAttributes]];
+	} else if ([result respondsToSelector:@selector(setTitle:)]) {
+		[result setTitle:theTitle];
+	}
+	NTV_LOG(@"[weather] controlAtIndex done row=%ld", row);
 	return ( result );
 }
 

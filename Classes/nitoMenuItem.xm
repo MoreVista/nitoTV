@@ -19,9 +19,12 @@ static BOOL centered = FALSE;
 
 {
 	id object = [[NSClassFromString(@"nitoMenuItem") alloc] init];
-	[object addAccessoryOfType:kBRFolderMenuItem];
+	NTV_LOG(@"[menuitem] ntvFolderMenuItem obj=%@ respondsAddAccessory=%d",
+	        object, (int)[object respondsToSelector:@selector(addAccessoryOfType:)]);
+	if ([object respondsToSelector:@selector(addAccessoryOfType:)])
+		[object addAccessoryOfType:kBRFolderMenuItem];
 	return [object autorelease];
-	
+
 }
 
 %new +(id)ntvShuffleMenuItem
@@ -55,8 +58,10 @@ static BOOL centered = FALSE;
 %new +(id)ntvProgressMenuItem
 {
 	id object = [[NSClassFromString(@"nitoMenuItem") alloc] init];
-	[object addAccessoryOfType:kBRProgressMenuItem];
-	[object addAccessoryOfType:kBRFolderMenuItem];
+	if ([object respondsToSelector:@selector(addAccessoryOfType:)]) {
+		[object addAccessoryOfType:kBRProgressMenuItem];
+		[object addAccessoryOfType:kBRFolderMenuItem];
+	}
 	return [object autorelease];
 }
 
